@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三维渐变背景生成器 - 安宁疗护平台</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #8066D2;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .gradient-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        .gradient-section h3 {
+            color: #8066D2;
+            margin-top: 0;
+            border-bottom: 2px solid #8066D2;
+            padding-bottom: 10px;
+        }
+        .canvas-container {
+            border: 1px dashed #ccc;
+            margin: 10px 0;
+            display: flex;
+            justify-content: center;
+            background: white;
+            overflow: hidden;
+            position: relative;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+        .controls {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        .control-group {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .control-group label {
+            min-width: 100px;
+            font-weight: bold;
+            color: #333;
+        }
+        input[type="range"] {
+            flex: 1;
+            min-width: 200px;
+        }
+        select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #8066D2, #41A8F9);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(128, 102, 210, 0.3);
+        }
+        .btn-success {
+            background: #4CAF50;
+            color: white;
+        }
+        .btn-large {
+            padding: 15px 40px;
+            font-size: 16px;
+            margin: 20px 5px;
+        }
+        .action-buttons {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+        }
+        .info-box {
+            background: #e8f4f8;
+            border-left: 4px solid #41A8F9;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .info-box h4 {
+            margin-top: 0;
+            color: #41A8F9;
+        }
+        .style-selector {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        .style-btn {
+            padding: 8px 16px;
+            border: 2px solid #8066D2;
+            background: white;
+            color: #8066D2;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .style-btn.active {
+            background: #8066D2;
+            color: white;
+        }
+        .style-btn:hover {
+            transform: scale(1.05);
+        }
+        .download-area {
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 三维渐变背景生成器</h1>
+        <p class="subtitle">为安宁疗护平台生成具有三维效果的背景图片</p>
+
+        <div class="info-box">
+            <h4>💡 使用说明</h4>
+            <ul>
+                <li>选择您喜欢的三维渐变风格</li>
+                <li>调整参数（光照、深度、纹理等）</li>
+                <li>实时预览效果</li>
+                <li>下载高分辨率图片（1920×1080）</li>
+            </ul>
+        </div>
+
+        <!-- 专业平静风格 -->
+        <div class="gradient-section">
+            <h3>1. 专业平静风格 (Gradient-1)</h3>
+            <p><strong>适用场景：</strong>症状控制、医疗资源库、医护人员入口</p>
+
+            <div class="style-selector">
+                <button class="style-btn active" onclick="setGradient1Style(0)">柔和波浪</button>
+                <button class="style-btn" onclick="setGradient1Style(1)">几何立体</button>
+                <button class="style-btn" onclick="setGradient1Style(2)">球体光晕</button>
+                <button class="style-btn" onclick="setGradient1Style(3)">立方体网格</button>
+            </div>
+
+            <div class="canvas-container" style="max-height: 300px;">
+                <canvas id="gradient1Canvas" width="1920" height="1080"></canvas>
+            </div>
+
+            <div class="controls">
+                <div class="control-group">
+                    <label>光照强度:</label>
+                    <input type="range" id="gradient1Light" min="0" max="100" value="50" onchange="updateGradient1()">
+                    <span id="gradient1LightVal">50%</span>
+                </div>
+                <div class="control-group">
+                    <label>深度效果:</label>
+                    <input type="range" id="gradient1Depth" min="0" max="100" value="60" onchange="updateGradient1()">
+                    <span id="gradient1DepthVal">60%</span>
+                </div>
+                <div class="control-group">
+                    <label>纹理密度:</label>
+                    <input type="range" id="gradient1Texture" min="0" max="100" value="30" onchange="updateGradient1()">
+                    <span id="gradient1TextureVal">30%</span>
+                </div>
+            </div>
+
+            <div class="download-area">
+                <button class="btn btn-success" onclick="downloadGradient1()">💾 下载 gradient-1.jpg</button>
+            </div>
+        </div>
+
+        <!-- 温暖人文风格 -->
+        <div class="gradient-section">
+            <h3>2. 温暖人文风格 (Gradient-2)</h3>
+            <p><strong>适用场景：</strong>心理支持、家属专区、生命纪念</p>
+
+            <div class="style-selector">
+                <button class="style-btn active" onclick="setGradient2Style(0)">温暖流光</button>
+                <button class="style-btn" onclick="setGradient2Style(1)">心形光晕</button>
+                <button class="style-btn" onclick="setGradient2Style(2)">柔和波浪</button>
+                <button class="style-btn" onclick="setGradient2Style(3)">有机形态</button>
+            </div>
+
+            <div class="canvas-container" style="max-height: 300px;">
+                <canvas id="gradient2Canvas" width="1920" height="1080"></canvas>
+            </div>
+
+            <div class="controls">
+                <div class="control-group">
+                    <label>光照强度:</label>
+                    <input type="range" id="gradient2Light" min="0" max="100" value="60" onchange="updateGradient2()">
+                    <span id="gradient2LightVal">60%</span>
+                </div>
+                <div class="control-group">
+                    <label>深度效果:</label>
+                    <input type="range" id="gradient2Depth" min="0" max="100" value="70" onchange="updateGradient2()">
+                    <span id="gradient2DepthVal">70%</span>
+                </div>
+                <div class="control-group">
+                    <label>纹理密度:</label>
+                    <input type="range" id="gradient2Texture" min="0" max="100" value="40" onchange="updateGradient2()">
+                    <span id="gradient2TextureVal">40%</span>
+                </div>
+            </div>
+
+            <div class="download-area">
+                <button class="btn btn-success" onclick="downloadGradient2()">💾 下载 gradient-2.jpg</button>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-primary btn-large" onclick="downloadAllGradients()">💾 下载所有背景图</button>
+        </div>
+
+        <div class="info-box">
+            <h4>🎯 三维效果说明</h4>
+            <ul>
+                <li><strong>光照效果：</strong>模拟真实光源，产生高光和阴影</li>
+                <li><strong>深度层次：</strong>通过渐变和纹理创造景深感</li>
+                <li><strong>材质纹理：</strong>添加微妙的表面纹理，增强立体感</li>
+                <li><strong>动态流动：</strong>波浪、光晕等元素创造流动感</li>
+            </ul>
+            <p style="margin-top: 10px;"><strong>下载后请将文件移动到：</strong><code>public/images/decorative/</code></p>
+        </div>
+    </div>
+
+    <script>
+        let gradient1Style = 0;
+        let gradient2Style = 0;
+
+        // 绘制三维渐变背景 1
+        function draw3DGradient1() {
+            const canvas = document.getElementById('gradient1Canvas');
+            const ctx = canvas.getContext('2d');
+
+            const light = parseInt(document.getElementById('gradient1Light').value);
+            const depth = parseInt(document.getElementById('gradient1Depth').value);
+            const texture = parseInt(document.getElementById('gradient1Texture').value);
+
+            // 更新显示值
+            document.getElementById('gradient1LightVal').textContent = light + '%';
+            document.getElementById('gradient1DepthVal').textContent = depth + '%';
+            document.getElementById('gradient1TextureVal').textContent = texture + '%';
+
+            // 清除画布
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 基础渐变背景
+            const baseGradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            baseGradient.addColorStop(0, '#E8F4F8');
+            baseGradient.addColorStop(1, '#EDE7F6');
+            ctx.fillStyle = baseGradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 根据风格绘制不同效果
+            switch(gradient1Style) {
+                case 0: drawSoftWaves(ctx, canvas, light, depth, texture, ['#E8F4F8', '#E1EEF8', '#D4E8F8', '#EDE7F6', '#E7E4F4', '#E1E1F2']); break;
+                case 1: drawGeometric3D(ctx, canvas, light, depth, texture, ['#E8F4F8', '#EDE7F6']); break;
+                case 2: drawSphereGradient(ctx, canvas, light, depth, texture, ['#E8F4F8', '#EDE7F6']); break;
+                case 3: drawCubeGrid(ctx, canvas, light, depth, texture, ['#E8F4F8', '#EDE7F6']); break;
+            }
+        }
+
+        // 绘制三维渐变背景 2
+        function draw3DGradient2() {
+            const canvas = document.getElementById('gradient2Canvas');
+            const ctx = canvas.getContext('2d');
+
+            const light = parseInt(document.getElementById('gradient2Light').value);
+            const depth = parseInt(document.getElementById('gradient2Depth').value);
+            const texture = parseInt(document.getElementById('gradient2Texture').value);
+
+            // 更新显示值
+            document.getElementById('gradient2LightVal').textContent = light + '%';
+            document.getElementById('gradient2DepthVal').textContent = depth + '%';
+            document.getElementById('gradient2TextureVal').textContent = texture + '%';
+
+            // 清除画布
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 基础渐变背景
+            const baseGradient = ctx.createLinearGradient(canvas.width, 0, 0, canvas.height);
+            baseGradient.addColorStop(0, '#FFE4C4');
+            baseGradient.addColorStop(1, '#FCE4EC');
+            ctx.fillStyle = baseGradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 根据风格绘制不同效果
+            switch(gradient2Style) {
+                case 0: drawWarmFlow(ctx, canvas, light, depth, texture, ['#FFE4C4', '#FFD4A8', '#FFC48C', '#FCE4EC', '#F8D4E4', '#F4C4DC']); break;
+                case 1: drawHeartGlow(ctx, canvas, light, depth, texture, ['#FFE4C4', '#FCE4EC']); break;
+                case 2: drawSoftWaves(ctx, canvas, light, depth, texture, ['#FFE4C4', '#FFDCC4', '#FCE4EC', '#F8DCEC']); break;
+                case 3: drawOrganicForms(ctx, canvas, light, depth, texture, ['#FFE4C4', '#FCE4EC']); break;
+            }
+        }
+
+        // 风格1: 柔和波浪
+        function drawSoftWaves(ctx, canvas, light, depth, texture, colors) {
+            const waveCount = Math.floor(3 + depth / 20);
+            const amplitude = (depth / 100) * 150 + 50;
+            const frequency = (100 - texture) / 100 * 0.005 + 0.002;
+
+            for (let w = 0; w < waveCount; w++) {
+                const colorIndex = w % colors.length;
+                const yOffset = (canvas.height / waveCount) * w;
+                const gradient = ctx.createLinearGradient(0, yOffset, 0, yOffset + amplitude * 2);
+
+                const baseColor = colors[colorIndex];
+                gradient.addColorStop(0, adjustBrightness(baseColor, light / 100 * 20 - 10));
+                gradient.addColorStop(0.5, adjustBrightness(baseColor, light / 100 * 30));
+                gradient.addColorStop(1, adjustBrightness(baseColor, light / 100 * 20 - 10));
+
+                ctx.beginPath();
+                ctx.moveTo(0, yOffset + amplitude);
+
+                for (let x = 0; x <= canvas.width; x += 10) {
+                    const y = yOffset + amplitude + Math.sin(x * frequency + w) * amplitude * 0.5;
+                    ctx.lineTo(x, y);
+                }
+
+                ctx.lineTo(canvas.width, yOffset + amplitude * 2);
+                ctx.lineTo(0, yOffset + amplitude * 2);
+                ctx.closePath();
+
+                ctx.globalAlpha = 0.6;
+                ctx.fillStyle = gradient;
+                ctx.fill();
+            }
+
+            // 添加纹理
+            if (texture > 0) {
+                ctx.globalAlpha = texture / 200;
+                for (let i = 0; i < texture * 2; i++) {
+                    const x = Math.random() * canvas.width;
+                    const y = Math.random() * canvas.height;
+                    const size = Math.random() * 50 + 20;
+                    const glowGradient = ctx.createRadialGradient(x, y, 0, x, y, size);
+                    glowGradient.addColorStop(0, 'rgba(255, 255, 255, 0.3)');
+                    glowGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                    ctx.fillStyle = glowGradient;
+                    ctx.fillRect(x - size, y - size, size * 2, size * 2);
+                }
+            }
+
+            ctx.globalAlpha = 1;
+        }
+
+        // 风格2: 几何立体
+        function drawGeometric3D(ctx, canvas, light, depth, texture, colors) {
+            const gridSize = Math.floor(100 - depth / 2);
+            const cubeSize = gridSize * 0.4;
+
+            for (let x = 0; x < canvas.width; x += gridSize) {
+                for (let y = 0; y < canvas.height; y += gridSize) {
+                    const offset = ((x + y) / gridSize) % 2;
+                    const lift = Math.sin((x + y) * 0.003) * (depth / 2);
+
+                    // 顶面
+                    ctx.beginPath();
+                    ctx.moveTo(x + cubeSize / 2, y - cubeSize / 3 + lift);
+                    ctx.lineTo(x + cubeSize, y + lift);
+                    ctx.lineTo(x + cubeSize / 2, y + cubeSize / 3 + lift);
+                    ctx.lineTo(x, y + lift);
+                    ctx.closePath();
+                    ctx.fillStyle = adjustBrightness(colors[0], light / 100 * 15);
+                    ctx.globalAlpha = 0.7;
+                    ctx.fill();
+
+                    // 右面（阴影）
+                    ctx.beginPath();
+                    ctx.moveTo(x + cubeSize, y + lift);
+                    ctx.lineTo(x + cubeSize / 2, y + cubeSize / 3 + lift);
+                    ctx.lineTo(x + cubeSize / 2, y + cubeSize + cubeSize / 3 + lift);
+                    ctx.lineTo(x + cubeSize, y + cubeSize + lift);
+                    ctx.closePath();
+                    ctx.fillStyle = adjustBrightness(colors[0], -light / 100 * 10);
+                    ctx.fill();
+
+                    // 左面（中调）
+                    ctx.beginPath();
+                    ctx.moveTo(x, y + lift);
+                    ctx.lineTo(x + cubeSize / 2, y + cubeSize / 3 + lift);
+                    ctx.lineTo(x + cubeSize / 2, y + cubeSize + cubeSize / 3 + lift);
+                    ctx.lineTo(x, y + cubeSize + lift);
+                    ctx.closePath();
+                    ctx.fillStyle = adjustBrightness(colors[1], -light / 100 * 5);
+                    ctx.fill();
+                }
+            }
+
+            ctx.globalAlpha = 1;
+
+            // 添加纹理层
+            if (texture > 0) {
+                ctx.globalAlpha = texture / 300;
+                const patternGradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+                patternGradient.addColorStop(0, 'rgba(255, 255, 255, 0.5)');
+                patternGradient.addColorStop(1, 'rgba(200, 200, 220, 0.3)');
+                ctx.fillStyle = patternGradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+
+            ctx.globalAlpha = 1;
+        }
+
+        // 风格3: 球体光晕
+        function drawSphereGradient(ctx, canvas, light, depth, texture, colors) {
+            const spheres = Math.floor(3 + depth / 15);
+
+            for (let s = 0; s < spheres; s++) {
+                const x = (canvas.width / spheres) * s + canvas.width / spheres / 2;
+                const y = canvas.height / 2 + Math.sin(s * 2) * 100;
+                const radius = (depth / 100) * 300 + 150;
+
+                // 创建球体渐变
+                const sphereGradient = ctx.createRadialGradient(
+                    x - radius * 0.3, y - radius * 0.3, 0,
+                    x, y, radius
+                );
+
+                const color = colors[s % colors.length];
+                sphereGradient.addColorStop(0, adjustBrightness(color, light / 100 * 25));
+                sphereGradient.addColorStop(0.3, adjustBrightness(color, light / 100 * 10));
+                sphereGradient.addColorStop(0.7, adjustBrightness(color, -light / 100 * 10));
+                sphereGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+                ctx.globalAlpha = 0.6;
+                ctx.fillStyle = sphereGradient;
+                ctx.fillRect(x - radius, y - radius, radius * 2, radius * 2);
+            }
+
+            ctx.globalAlpha = 1;
+
+            // 添加纹理粒子
+            if (texture > 0) {
+                ctx.globalAlpha = texture / 200;
+                for (let i = 0; i < texture * 5; i++) {
+                    const x = Math.random() * canvas.width;
+                    const y = Math.random() * canvas.height;
+                    const size = Math.random() * 20 + 5;
+                    ctx.beginPath();
+                    ctx.arc(x, y, size, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                    ctx.fill();
+                }
+            }
+
+            ctx.globalAlpha = 1;
+        }
+
+        // 风格4: 立方体网格
+        function drawCubeGrid(ctx, canvas, light, depth, texture, colors) {
+            const gridSize = Math.floor(150 - depth / 1.5);
+            const cubeSize = gridSize * 0.35;
+            const elevation = (depth / 100) * 30;
+
+            // 绘制地面网格
+            ctx.strokeStyle = 'rgba(128, 102, 210, 0.1)';
+            ctx.lineWidth = 1;
+
+            for (let x = 0; x < canvas.width; x += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+
+            for (let y = 0; y < canvas.height; y += gridSize * 0.5) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+
+            // 绘制3D立方体
+            for (let x = gridSize / 2; x < canvas.width; x += gridSize) {
+                for (let y = gridSize / 2; y < canvas.height; y += gridSize * 0.5) {
+                    const height = Math.sin((x + y) * 0.01) * elevation + elevation / 2;
+
+                    // 顶面
+                    ctx.beginPath();
+                    ctx.moveTo(x, y - height);
+                    ctx.lineTo(x + cubeSize, y - height);
+                    ctx.lineTo(x + cubeSize / 2, y - height - cubeSize / 2);
+                    ctx.lineTo(x - cubeSize / 2, y - height - cubeSize / 2);
+                    ctx.closePath();
+                    ctx.fillStyle = adjustBrightness(colors[0], light / 100 * 15);
+                    ctx.globalAlpha = 0.8;
+                    ctx.fill();
+
+                    // 右面
+                    ctx.beginPath();
+                    ctx.moveTo(x + cubeSize, y - height);
+                    ctx.lineTo(x + cubeSize, y);
+                    ctx.lineTo(x + cubeSize / 2, y);
+                    ctx.lineTo(x + cubeSize / 2, y - height - cubeSize / 2);
+                    ctx.closePath();
+                    ctx.fillStyle = adjustBrightness(colors[0], -light / 100 * 10);
+                    ctx.fill();
+
+                    // 左面
+                    ctx.beginPath();
+                    ctx.moveTo(x - cubeSize / 2, y - height - cubeSize / 2);
+                    ctx.lineTo(x - cubeSize / 2, y);
+                    ctx.lineTo(x, y);
+                    ctx.lineTo(x, y - height);
+                    ctx.closePath();
+                    ctx.fillStyle = adjustBrightness(colors[1], -light / 100 * 5);
+                    ctx.fill();
+                }
+            }
+
+            ctx.globalAlpha = 1;
+        }
+
+        // 温暖流光
+        function drawWarmFlow(ctx, canvas, light, depth, texture, colors) {
+            const flowCount = Math.floor(4 + depth / 15);
+
+            for (let f = 0; f < flowCount; f++) {
+                const startX = Math.random() * canvas.width;
+                const startY = Math.random() * canvas.height;
+                const endX = Math.random() * canvas.width;
+                const endY = Math.random() * canvas.height;
+                const width = (depth / 100) * 200 + 50;
+
+                const flowGradient = ctx.createLinearGradient(startX, startY, endX, endY);
+                const color = colors[f % colors.length];
+
+                flowGradient.addColorStop(0, adjustBrightness(color, light / 100 * 20));
+                flowGradient.addColorStop(0.5, adjustBrightness(color, light / 100 * 30));
+                flowGradient.addColorStop(1, adjustBrightness(color, light / 100 * 20));
+
+                ctx.globalAlpha = 0.4;
+                ctx.strokeStyle = flowGradient;
+                ctx.lineWidth = width;
+                ctx.lineCap = 'round';
+
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.bezierCurveTo(
+                    startX + (endX - startX) / 3, startY + Math.random() * 200,
+                    endX - (endX - startX) / 3, endY + Math.random() * 200,
+                    endX, endY
+                );
+                ctx.stroke();
+            }
+
+            ctx.globalAlpha = 1;
+
+            // 添加光点纹理
+            if (texture > 0) {
+                ctx.globalAlpha = texture / 200;
+                for (let i = 0; i < texture * 3; i++) {
+                    const x = Math.random() * canvas.width;
+                    const y = Math.random() * canvas.height;
+                    const radius = Math.random() * 30 + 10;
+
+                    const glow = ctx.createRadialGradient(x, y, 0, x, y, radius);
+                    glow.addColorStop(0, 'rgba(255, 200, 200, 0.6)');
+                    glow.addColorStop(1, 'rgba(255, 200, 200, 0)');
+                    ctx.fillStyle = glow;
+                    ctx.fillRect(x - radius, y - radius, radius * 2, radius * 2);
+                }
+            }
+
+            ctx.globalAlpha = 1;
+        }
+
+        // 心形光晕
+        function drawHeartGlow(ctx, canvas, light, depth, texture, colors) {
+            const heartCount = Math.floor(2 + depth / 30);
+            const baseSize = (depth / 100) * 400 + 200;
+
+            for (let h = 0; h < heartCount; h++) {
+                const x = (canvas.width / (heartCount + 1)) * (h + 1);
+                const y = canvas.height / 2 + Math.sin(h) * 100;
+                const size = baseSize * (0.5 + Math.random() * 0.5);
+
+                // 绘制心形光晕
+                const heartGradient = ctx.createRadialGradient(x, y, 0, x, y, size);
+
+                const color = colors[h % colors.length];
+                heartGradient.addColorStop(0, adjustBrightness(color, light / 100 * 25));
+                heartGradient.addColorStop(0.3, adjustBrightness(color, light / 100 * 15));
+                heartGradient.addColorStop(0.7, adjustBrightness(color, light / 100 * 5));
+                heartGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+                ctx.globalAlpha = 0.6;
+                ctx.fillStyle = heartGradient;
+
+                // 绘制简化心形
+                ctx.beginPath();
+                ctx.moveTo(x, y + size * 0.3);
+                ctx.bezierCurveTo(x - size * 0.5, y - size * 0.2, x - size * 0.2, y - size * 0.5, x, y - size * 0.2);
+                ctx.bezierCurveTo(x + size * 0.2, y - size * 0.5, x + size * 0.5, y - size * 0.2, x, y + size * 0.3);
+                ctx.fill();
+            }
+
+            ctx.globalAlpha = 1;
+
+            // 添加爱心纹理
+            if (texture > 0) {
+                ctx.globalAlpha = texture / 300;
+                ctx.font = `${12 + texture / 5}px Arial`;
+                ctx.fillStyle = 'rgba(255, 150, 150, 0.3)';
+                for (let i = 0; i < texture * 2; i++) {
+                    const x = Math.random() * canvas.width;
+                    const y = Math.random() * canvas.height;
+                    ctx.fillText('♥', x, y);
+                }
+            }
+
+            ctx.globalAlpha = 1;
+        }
+
+        // 有机形态
+        function drawOrganicForms(ctx, canvas, light, depth, texture, colors) {
+            const formCount = Math.floor(3 + depth / 20);
+
+            for (let f = 0; f < formCount; f++) {
+                const centerX = Math.random() * canvas.width;
+                const centerY = Math.random() * canvas.height;
+                const size = (depth / 100) * 300 + 150;
+
+                const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, size);
+                const color = colors[f % colors.length];
+
+                gradient.addColorStop(0, adjustBrightness(color, light / 100 * 20));
+                gradient.addColorStop(0.5, adjustBrightness(color, light / 100 * 10));
+                gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+                ctx.globalAlpha = 0.5;
+                ctx.fillStyle = gradient;
+
+                // 绘制有机形态（多边形）
+                ctx.beginPath();
+                const points = 6 + Math.floor(Math.random() * 4);
+                for (let p = 0; p <= points; p++) {
+                    const angle = (p / points) * Math.PI * 2;
+                    const radius = size * (0.7 + Math.random() * 0.6);
+                    const x = centerX + Math.cos(angle) * radius;
+                    const y = centerY + Math.sin(angle) * radius;
+                    if (p === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            ctx.globalAlpha = 1;
+
+            // 添加纹理
+            if (texture > 0) {
+                ctx.globalAlpha = texture / 250;
+                for (let i = 0; i < texture * 4; i++) {
+                    const x = Math.random() * canvas.width;
+                    const y = Math.random() * canvas.height;
+                    const size = Math.random() * 15 + 5;
+
+                    const glow = ctx.createRadialGradient(x, y, 0, x, y, size);
+                    glow.addColorStop(0, 'rgba(255, 220, 200, 0.4)');
+                    glow.addColorStop(1, 'rgba(255, 220, 200, 0)');
+                    ctx.fillStyle = glow;
+                    ctx.fillRect(x - size, y - size, size * 2, size * 2);
+                }
+            }
+
+            ctx.globalAlpha = 1;
+        }
+
+        // 调整颜色亮度
+        function adjustBrightness(hex, percent) {
+            const num = parseInt(hex.replace('#', ''), 16);
+            const amt = Math.round(2.55 * percent);
+            const R = (num >> 16) + amt;
+            const G = (num >> 8 & 0x00FF) + amt;
+            const B = (num & 0x0000FF) + amt;
+
+            const newR = Math.min(255, Math.max(0, R));
+            const newG = Math.min(255, Math.max(0, G));
+            const newB = Math.min(255, Math.max(0, B));
+
+            return '#' + (0x1000000 + newR * 0x10000 + newG * 0x100 + newB).toString(16).slice(1);
+        }
+
+        // 设置渐变1风格
+        function setGradient1Style(style) {
+            gradient1Style = style;
+            document.querySelectorAll('.gradient-section:first-of-type .style-btn').forEach((btn, index) => {
+                btn.classList.toggle('active', index === style);
+            });
+            draw3DGradient1();
+        }
+
+        // 设置渐变2风格
+        function setGradient2Style(style) {
+            gradient2Style = style;
+            document.querySelectorAll('.gradient-section:last-of-type .style-btn').forEach((btn, index) => {
+                btn.classList.toggle('active', index === style);
+            });
+            draw3DGradient2();
+        }
+
+        // 更新渐变1
+        function updateGradient1() {
+            draw3DGradient1();
+        }
+
+        // 更新渐变2
+        function updateGradient2() {
+            draw3DGradient2();
+        }
+
+        // 下载渐变1
+        function downloadGradient1() {
+            const canvas = document.getElementById('gradient1Canvas');
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/jpeg', 0.95);
+            link.download = 'gradient-1.jpg';
+            link.click();
+        }
+
+        // 下载渐变2
+        function downloadGradient2() {
+            const canvas = document.getElementById('gradient2Canvas');
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/jpeg', 0.95);
+            link.download = 'gradient-2.jpg';
+            link.click();
+        }
+
+        // 下载所有渐变
+        function downloadAllGradients() {
+            downloadGradient1();
+            setTimeout(() => {
+                downloadGradient2();
+                alert('✅ 两个三维渐变背景已下载！\n\n请将下载的文件移动到 public/images/decorative/ 文件夹。');
+            }, 500);
+        }
+
+        // 页面加载时初始化
+        window.onload = function() {
+            draw3DGradient1();
+            draw3DGradient2();
+        };
+    </script>
+</body>
+</html>
