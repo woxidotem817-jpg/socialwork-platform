@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安宁疗护平台装饰文件生成器</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #8066D2;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .preview-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .preview-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            background: #fafafa;
+        }
+        .preview-card h3 {
+            margin-top: 0;
+            color: #8066D2;
+            border-bottom: 2px solid #8066D2;
+            padding-bottom: 10px;
+        }
+        .canvas-container {
+            border: 1px dashed #ccc;
+            margin: 10px 0;
+            display: flex;
+            justify-content: center;
+            background: white;
+            overflow: auto;
+        }
+        .info-box {
+            background: #e8f4f8;
+            border-left: 4px solid #41A8F9;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .info-box h4 {
+            margin-top: 0;
+            color: #41A8F9;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #8066D2, #41A8F9);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(128, 102, 210, 0.3);
+        }
+        .btn-success {
+            background: #4CAF50;
+            color: white;
+        }
+        .btn-large {
+            padding: 15px 40px;
+            font-size: 16px;
+            margin: 20px 5px;
+        }
+        .action-buttons {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+        .specs {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.6;
+        }
+        .specs ul {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .highlight {
+            color: #8066D2;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 安宁疗护平台装饰文件生成器</h1>
+        <p class="subtitle">根据《安宁疗护实践指南（2025年版）》视觉规范生成装饰文件</p>
+
+        <div class="info-box">
+            <h4>📋 生成说明</h4>
+            <p>本工具将生成4个符合安宁疗护风格的装饰文件：</p>
+            <ul>
+                <li><strong>logo.png</strong> (200×80) - 平台核心标识</li>
+                <li><strong>pattern.png</strong> (1024×1024) - 背景纹理</li>
+                <li><strong>gradient-1.jpg</strong> (1920×1080) - 专业平静渐变背景</li>
+                <li><strong>gradient-2.jpg</strong> (1920×1080) - 温暖人文渐变背景</li>
+            </ul>
+        </div>
+
+        <div class="preview-section">
+            <div class="preview-card">
+                <h3>1. Logo (200×80)</h3>
+                <div class="canvas-container">
+                    <canvas id="logoCanvas" width="200" height="80"></canvas>
+                </div>
+                <div class="specs">
+                    <p><strong>设计元素：</strong></p>
+                    <ul>
+                        <li>左侧：心形包裹蛇杖图形</li>
+                        <li>右侧："安享宁护" + "安宁疗护综合服务平台"</li>
+                        <li>主色：<span class="highlight">#8066D2</span>（淡紫）</li>
+                        <li>辅助色：<span class="highlight">#41A8F9</span>（浅蓝）</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="preview-card">
+                <h3>2. Pattern (1024×1024)</h3>
+                <div class="canvas-container" style="max-height: 300px;">
+                    <canvas id="patternCanvas" width="1024" height="1024"></canvas>
+                </div>
+                <div class="specs">
+                    <p><strong>设计元素：</strong></p>
+                    <ul>
+                        <li>浅紫色细线网格（间距20px）</li>
+                        <li>小圆点（直径3px）</li>
+                        <li>透明度：30%</li>
+                        <li>适合平铺作为背景纹理</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="preview-card">
+                <h3>3. Gradient 1 (1920×1080)</h3>
+                <div class="canvas-container" style="max-height: 200px;">
+                    <canvas id="gradient1Canvas" width="1920" height="1080"></canvas>
+                </div>
+                <div class="specs">
+                    <p><strong>风格定位：</strong>专业平静</p>
+                    <ul>
+                        <li>渐变：<span class="highlight">#E8F4F8</span> → <span class="highlight">#EDE7F6</span></li>
+                        <li>角度：45°线性渐变</li>
+                        <li>适用：症状控制、医疗资源库、医护人员入口</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="preview-card">
+                <h3>4. Gradient 2 (1920×1080)</h3>
+                <div class="canvas-container" style="max-height: 200px;">
+                    <canvas id="gradient2Canvas" width="1920" height="1080"></canvas>
+                </div>
+                <div class="specs">
+                    <p><strong>风格定位：</strong>温暖人文</p>
+                    <ul>
+                        <li>渐变：<span class="highlight">#FFE4C4</span> → <span class="highlight">#FCE4EC</span></li>
+                        <li>角度：135°线性渐变</li>
+                        <li>适用：心理支持、家属专区、生命纪念</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-primary btn-large" onclick="generateAllImages()">✨ 生成所有图片</button>
+            <button class="btn btn-success btn-large" onclick="downloadAllImages()">💾 下载所有图片</button>
+        </div>
+
+        <div class="info-box">
+            <h4>💡 使用建议</h4>
+            <ul>
+                <li>点击"生成所有图片"预览效果</li>
+                <li>满意后点击"下载所有图片"保存到本地</li>
+                <li>下载后将图片移动到 <code>public/images/decorative/</code> 文件夹</li>
+                <li>所有图片采用低饱和度、高柔和度设计，符合安宁疗护"温暖+专业"氛围</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // 绘制 Logo
+        function drawLogo() {
+            const canvas = document.getElementById('logoCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // 清除画布
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 背景透明（PNG格式）
+            
+            // 绘制左侧心形包裹蛇杖图形
+            ctx.save();
+            ctx.translate(30, 40);
+            ctx.scale(0.8, 0.8);
+            
+            // 心形
+            ctx.beginPath();
+            const heartGradient = ctx.createRadialGradient(0, -10, 0, 0, -10, 30);
+            heartGradient.addColorStop(0, '#A78BFA');
+            heartGradient.addColorStop(1, '#8066D2');
+            ctx.fillStyle = heartGradient;
+            
+            ctx.moveTo(0, 15);
+            ctx.bezierCurveTo(-25, -10, -25, -35, 0, -20);
+            ctx.bezierCurveTo(25, -35, 25, -10, 0, 15);
+            ctx.fill();
+            
+            // 蛇杖（简化版）
+            ctx.strokeStyle = '#41A8F9';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(0, -5);
+            ctx.lineTo(0, 25);
+            ctx.stroke();
+            
+            // 蛇
+            ctx.strokeStyle = '#41A8F9';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(-3, -2);
+            ctx.quadraticCurveTo(-8, 5, -2, 12);
+            ctx.quadraticCurveTo(3, 18, 1, 24);
+            ctx.stroke();
+            
+            // 翅膀（象征性）
+            ctx.strokeStyle = '#41A8F9';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(0, 5);
+            ctx.lineTo(-8, 0);
+            ctx.lineTo(-12, 8);
+            ctx.moveTo(0, 8);
+            ctx.lineTo(8, 3);
+            ctx.lineTo(12, 11);
+            ctx.stroke();
+            
+            ctx.restore();
+            
+            // 绘制右侧文字
+            ctx.font = 'bold 22px "Microsoft YaHei", Arial, sans-serif';
+            ctx.fillStyle = '#333333';
+            ctx.textAlign = 'left';
+            ctx.fillText('安享宁护', 70, 48);
+            
+            ctx.font = '12px "Microsoft YaHei", Arial, sans-serif';
+            ctx.fillStyle = '#666666';
+            ctx.fillText('安宁疗护综合服务平台', 70, 65);
+        }
+
+        // 绘制 Pattern
+        function drawPattern() {
+            const canvas = document.getElementById('patternCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // 清除画布
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 绘制网格
+            ctx.strokeStyle = 'rgba(209, 196, 233, 0.4)'; // #D1C4E9 with 40% opacity
+            ctx.lineWidth = 1;
+            
+            // 垂直线
+            for (let x = 0; x <= canvas.width; x += 20) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            
+            // 水平线
+            for (let y = 0; y <= canvas.height; y += 20) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+            
+            // 绘制小圆点（在网格交叉点）
+            ctx.fillStyle = 'rgba(209, 196, 233, 0.5)';
+            for (let x = 10; x < canvas.width; x += 20) {
+                for (let y = 10; y < canvas.height; y += 20) {
+                    ctx.beginPath();
+                    ctx.arc(x, y, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+
+        // 绘制 Gradient 1
+        function drawGradient1() {
+            const canvas = document.getElementById('gradient1Canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // 创建渐变（45度）
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width * 0.707, canvas.height * 0.707);
+            gradient.addColorStop(0, '#E8F4F8'); // 浅蓝
+            gradient.addColorStop(1, '#EDE7F6'); // 淡紫
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // 绘制 Gradient 2
+        function drawGradient2() {
+            const canvas = document.getElementById('gradient2Canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // 创建渐变（135度）
+            const gradient = ctx.createLinearGradient(canvas.width, 0, 0, canvas.height * 0.707);
+            gradient.addColorStop(0, '#FFE4C4'); // 暖米色
+            gradient.addColorStop(1, '#FCE4EC'); // 浅粉
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // 生成所有图片
+        function generateAllImages() {
+            drawLogo();
+            drawPattern();
+            drawGradient1();
+            drawGradient2();
+            
+            // 显示成功提示
+            alert('✅ 所有图片已生成！\n\n请查看上方的预览效果。');
+        }
+
+        // 下载单个图片
+        function downloadCanvas(canvasId, filename) {
+            const canvas = document.getElementById(canvasId);
+            const link = document.createElement('a');
+            
+            if (filename.endsWith('.png')) {
+                link.href = canvas.toDataURL('image/png');
+            } else {
+                link.href = canvas.toDataURL('image/jpeg', 0.95);
+            }
+            
+            link.download = filename;
+            link.click();
+        }
+
+        // 下载所有图片
+        function downloadAllImages() {
+            downloadCanvas('logoCanvas', 'logo.png');
+            setTimeout(() => {
+                downloadCanvas('patternCanvas', 'pattern.png');
+                setTimeout(() => {
+                    downloadCanvas('gradient1Canvas', 'gradient-1.jpg');
+                    setTimeout(() => {
+                        downloadCanvas('gradient2Canvas', 'gradient-2.jpg');
+                        alert('✅ 所有图片下载完成！\n\n请将下载的文件移动到 public/images/decorative/ 文件夹。');
+                    }, 500);
+                }, 500);
+            }, 500);
+        }
+
+        // 页面加载时自动生成预览
+        window.onload = function() {
+            drawLogo();
+            drawPattern();
+            drawGradient1();
+            drawGradient2();
+        };
+    </script>
+</body>
+</html>
